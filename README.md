@@ -12,6 +12,7 @@ DDSP-Piano is a piano sound synthesizer from MIDI based on [DDSP](https://github
 This code relies on the official Tensorflow implementation of [DDSP](https://github.com/magenta/ddsp) (tested on v3.2.0 and v3.7.0) without additional package required.
 ```bash
 pip install --upgrade ddsp==3.7.0
+pip install tensorflow-addons
 ```
 
 ## Audio Synthesis from MIDI
@@ -29,6 +30,30 @@ Additional arguments for the inference script include:
 - `-wu`, `--warm_up`: duration of recurrent layers warm-up (to avoid undesirable noise at the beginning of the synthesized audio).
 - `-u`, `--unreverbed`: toggle it to also get the dry piano sound, without reverb applying.
 - `-n`, `--normalize`: set the loudness of the output file to this amount of dBFS. Set by default to `None`, which does not apply any gain modification.
+- `-p`, `--pitch-offset`: pitch offset for the MIDI file.
+
+There might be some errors with tensorflow's ckpt restoring like below, but as long as the audio is generated and saved(e.g.`INFO:absl:Audio saved at outputs/psycho_hum_1_SOME_piano_1.wav.`), it is fine.
+```bash
+INFO:absl:Model built, now retrieving model weights...
+INFO:absl:Restoring from checkpoint...
+INFO:absl:Trainer restoring the full model
+INFO:absl:Loaded checkpoint ddsp_piano/model_weights/v2/ckpt-225000
+INFO:absl:Loading model took 0.2 seconds
+INFO:absl:Model weights loaded from ddsp_piano/model_weights/v2/                  
+Now synthesizing audio (this could take some time)...
+INFO:absl:Audio saved at outputs/psycho_hum_1_SOME_piano_1.wav.
+WARNING:tensorflow:Detecting that an object or model or tf.train.Checkpoint is being deleted with unrestored values. See the following logs for the specific values in question. To silence these warnings, use `status.expect_partial()`. See https://www.tensorflow.org/api_docs/python/tf/train/Checkpoint#restorefor details about the status object returned by the restore function.
+WARNING:tensorflow:Detecting that an object or model or tf.train.Checkpoint is being deleted with unrestored values. See the following logs for the specific values in question. To silence these warnings, use `status.expect_partial()`. See https://www.tensorflow.org/api_docs/python/tf/train/Checkpoint#restorefor details about the status object returned by the restore function.
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.iter
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.iter
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.beta_1
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.beta_1
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.beta_2
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.beta_2
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.decay
+WARNING:tensorflow:Value in checkpoint could not be found in the restored object: (root).optimizer.decay
+```
+
 
 The default arguments will synthesize using the most recent version of DDSP-Piano.
 If you want to use the default model presented in the published papers, the inference script should look like:

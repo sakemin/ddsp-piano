@@ -28,6 +28,8 @@ def process_args():
                               (default: %(default)s)")
     parser.add_argument('-u', '--unreverbed', action='store_true',
                         help="Also generates dry piano audio, without reverb.")
+    parser.add_argument('-p', '--pitch-offset', type=int, default=0,
+                        help="Pitch offset for the MIDI file.")
     parser.add_argument('midi_file', type=str,
                         help="Piano MIDI file to synthesize.")
     parser.add_argument('out_file', type=str,
@@ -40,7 +42,8 @@ def main(args):
     logging.info("Loading midi file...")
     inputs = load_midi_as_conditioning(args.midi_file,
                                        duration=args.duration,
-                                       warm_up_duration=args.warm_up)
+                                       warm_up_duration=args.warm_up,
+                                       pitch_offset=args.pitch_offset)
     # Add piano model conditioning
     inputs['piano_model'] = tf.convert_to_tensor([[args.piano_type]])
     logging.info(

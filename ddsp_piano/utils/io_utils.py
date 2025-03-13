@@ -86,7 +86,8 @@ def load_midi_as_conditioning(mid_path,
                               n_synths=16,
                               frame_rate=250,
                               duration=None,
-                              warm_up_duration=0.):
+                              warm_up_duration=0.,
+                              pitch_offset=0):
     """Load MIDI file as conditioning and pedal inputs for inference.
     Args:
         - mid_path (path): path to .mid file.
@@ -94,6 +95,7 @@ def load_midi_as_conditioning(mid_path,
         - frame_rate (int): number of frames per second.
         - duration (float): crop file reading to this duration.
         - warm_up_duration (float): zero-pad for this amount of time at beginning
+        - pitch_offset (int): pitch offset for the MIDI file.
     Returns:
         - conditioning (1, n_frames, n_synths, 2): polyphonic note activity and
         onset inputs.
@@ -102,6 +104,12 @@ def load_midi_as_conditioning(mid_path,
     """
     # File reading
     note_sequence = load_midi_as_note_sequence(mid_path)
+
+    # Apply pitch offset
+    if pitch_offset != 0:
+        for note in note_sequence.notes:
+            note.pitch += pitch_offset
+
     # Convert to pianoroll
     roll = seq_lib.sequence_to_pianoroll(note_sequence,
                                          frames_per_second=frame_rate,
