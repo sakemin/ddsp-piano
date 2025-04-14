@@ -15,6 +15,39 @@ pip install --upgrade ddsp==3.7.0
 pip install tensorflow-addons
 ```
 
+## Docker Usage
+You can also run DDSP-Piano using Docker with CUDA support:
+
+### Building the Docker Image
+```bash
+# Clone the repository
+git clone https://github.com/IRCAM-Center/DDSP-Piano.git
+cd DDSP-Piano
+
+# Build the Docker image
+docker build -t ddsp-piano .
+```
+
+### Running with Docker
+Run the Docker container with volume mounts to access your MIDI files and save outputs:
+
+```bash
+docker run --gpus all \
+  -v /path/to/midi/folder:/data/input \
+  -v /path/to/output/folder:/data/output \
+  ddsp-piano \
+  /data/input/your_file.mid /data/output/result.wav
+```
+
+Additional arguments can be passed at the end:
+```bash
+docker run --gpus all \
+  -v /path/to/midi/folder:/data/input \
+  -v /path/to/output/folder:/data/output \
+  ddsp-piano \
+  /data/input/your_file.mid /data/output/result.wav --config ddsp_piano/configs/dafx22.gin --piano_type 3
+```
+
 ## Audio Synthesis from MIDI
 
 ### Single MIDI file Synthesis
